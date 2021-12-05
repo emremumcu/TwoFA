@@ -1,0 +1,87 @@
+﻿@model TFAViewModel
+
+<div class="container-lg">
+
+    <div class="row">
+
+        <div class="col">
+
+            <div class="jumbotron">
+
+                <h1 class="display-4">Two Factor Authentication</h1>
+
+                <hr />
+
+                <form asp-controller="Home" asp-action="Index" method="post">
+
+                    <div class="mb-3 row">
+                        <label class="col-sm-2 col-form-label">Your User Id</label>
+                        <div class="col-sm-10">
+                            <input asp-for="UserId" class="form-control" autocomplete="off" readonly />
+                            <small class="form-text text-muted">This is your user id. (which is generally saved in database of application when user registers)</small>
+                            <small class="form-text text-muted">This field generally is not shown to the user.</small>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-sm-2 col-form-label">Your User Name</label>
+                        <div class="col-sm-10">
+                            <input asp-for="UserName" class="form-control" autocomplete="off" readonly />
+                            <small class="form-text text-muted">This is your user name. (which is generally saved in database of application when user registers)</small>
+                            <small class="form-text text-muted">This field generally is not shown to the user.</small>
+                        </div>
+                    </div>
+
+                    <p>Randomly created key for OTP (One-time-password)</p>
+
+                    <div class="mb-3 row">
+                        <label for="inputPassword" class="col-sm-2 col-form-label">Totp Key (Text)</label>
+                        <div class="col-sm-10">
+                            <input asp-for="RandomKeyFormatted" class="form-control" readonly />
+                            <small class="form-text text-muted">option1: use this code if you will manually create the account in authenticator app. (code is case-insensitive)</small>
+                            <input asp-for="RandomKey" class="form-control" readonly type="hidden" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label for="inputPassword" class="col-sm-2 col-form-label">Totp Key (QRCode)</label>
+                        <div class="col-sm-10">
+                            <div id="qrCode"></div>
+                            <small class="form-text text-muted">option 2: scan this barcode if you will use camera to create the account in authenticator app.</small>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <div class="col-sm-2"></div>
+                        <div class="col-sm-10">
+                            <input type="submit" value="Continue ..." />
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+
+            <blockquote class="blockquote">
+                <p class="mb-4">Note</p>
+                <footer class="blockquote-footer">In order to produce one-time-passwords correctly, client-server time zones and times must be equalized.</footer>
+            </blockquote>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section scriptSection {
+
+    <script>
+    new QRCode(document.getElementById("qrCode"),
+        {
+            text: "@Html.Raw(Model.QRCodeData)",
+            width: 200,
+            height: 200
+        });
+    </script>
+
+}

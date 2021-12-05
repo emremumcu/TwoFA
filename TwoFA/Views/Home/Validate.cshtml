@@ -1,0 +1,106 @@
+﻿@model string
+
+<div class="container-lg navbar-padding">
+
+    <div class="row">
+
+        <div class="col">
+
+            <div class="jumbotron">
+
+                <h1 class="display-4">Two Factor Authentication</h1>
+
+                <hr />
+
+                <form name="validateForm" id="validateForm" asp-controller="Home" asp-action="ValidateResult" method="post">
+
+                    <div class="mb-3 row">
+                        <label class="col-sm-2 col-form-label">Unformatted Otp Key</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="authkey" id="authkey" readonly value="@Model" />
+                            <small class="form-text text-muted">This field is generally NOT shown to the user.</small>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-sm-2 col-form-label">One Time Password</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="authcode" id="authcode" autocomplete="off" />
+                            <small class="form-text text-muted">Enter the one time password which is shown on your authentication app's screen.</small>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <div class="col-sm-2"></div>
+                        <div class="col-sm-10">
+                            <input type="submit" value="Activate Two Factor Authentication" />
+                        </div>
+                    </div>
+
+                    <h3>Hint:</h3>
+
+                    <div class="mb-3 row">
+                        <div class="col-sm-2"></div>
+                        <div class="col-sm-10">
+                            <small class="mb-3 form-text text-muted">Your authenticator app should have the same code and same time-left seconds as the following button has. Press the button to set the code to the textbox.</small>
+                            <button type="button" class="btn btn-primary">
+                                <b onclick="SetValue(this.id);" id="codeText">...</b> <span class="badge badge-light" id="code-remaining">.</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+
+            <blockquote class="blockquote">
+                <p class="mb-4">Note</p>
+                <footer class="blockquote-footer">In order to produce one-time-passwords correctly, client-server time zones and times must be equalized.</footer>
+            </blockquote>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section scriptSection {
+
+<script>
+
+    $(document).ready(function () {
+        GetInfo();
+        setInterval(GetInfo, 1000);
+    });
+
+    function GetVerificationToken() {
+        var form = $('#validateForm');
+        var token = $('input[name="__RequestVerificationToken"]', form).val();
+        return token;
+    }
+
+    function GetInfo() {
+
+        var jqxhr = $.ajax({
+                method: "POST",
+                url: "/get-auth-code",
+                data: { __RequestVerificationToken: GetVerificationToken(), authenticatorKey: "@Model" }
+            })
+            .done(function (data, textStatus, jqXHR) {
+                $("#codeText").html(data.authCode);
+                $("#code-remaining").html(data.remainingTime);
+            })
+            .fail(function (jqXHR, textStatus, errorThrown) {     })
+            .always(function (jqXHROrData, textStatus, jqXHROrErrorThrown) { })
+        ;
+
+    }
+
+    function SetValue(id) {
+        var code = $("#" + id).html();
+        $("#authcode").val(code);
+    }
+
+</script>
+
+}

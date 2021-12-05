@@ -1,0 +1,38 @@
+﻿@model string
+
+<div class="container-lg navbar-padding">
+
+    <div class="row">
+
+        <div class="col">
+
+            <div class="jumbotron">
+
+                <h1 class="display-4">Two Factor Authentication</h1>
+
+                <hr />
+
+                <form name="validateForm" id="validateForm" asp-controller="TFA" asp-action="Validate" method="post">
+
+                    <div class="mb-3 row">
+                        <label class="col-sm-2 col-form-label">Validation Result</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" autocomplete="off" value="@Model" />
+                            <small class="form-text text-muted">If OTP result is true, this means user has successfully set-up his/her authenticaor app. Two factor authentication can be set.</small>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+
+            <blockquote class="blockquote">
+                <p class="mb-4">Note</p>
+                <footer class="blockquote-footer">In order to produce one-time-passwords correctly, client-server time zones and times must be equalized.</footer>
+            </blockquote>
+
+        </div>
+
+    </div>
+
+</div>
